@@ -4,6 +4,7 @@ import argparse
 import openpyxl
 from openpyxl.styles import NamedStyle
 from openpyxl.utils import column_index_from_string
+from openpyxl.styles import Alignment
 from datetime import datetime
 import glob
 import sys
@@ -152,7 +153,7 @@ if __name__ == "__main__":
 
     # copy the template to generate a new excel sheet
     xlsx_fileName = args.project_name+" extraction import runfile "+args.project_ID+".xlsx"
-    
+   
     try:
         workbook = openpyxl.load_workbook("Extraction import template test.xlsx")
         sheet = workbook.worksheets[0]
@@ -176,6 +177,30 @@ if __name__ == "__main__":
         # Format the column as "mm/dd/yyyy" after the header
         format_column_as_date(sheet, column_letter_to_format, start_row_after_header)
 
+        # Save new workbook before align text to center and change DNA vol
+        workbook.save(xlsx_fileName)
+        
+        # Center align all contents 
+        workbook = openpyxl.load_workbook (xlsx_fileName)
+        worksheet = workbook.active
+        for row in range(1, worksheet.max_row+1):
+            for col in range(1, worksheet.max_column+1):
+                cell = worksheet.cell(row, col)
+                cell.alignment = Alignment(horizontal='center', vertical='center', wrapText=False)
+
+        # Replace DNA vol from 500 to post-quant/aliquot vol
+        if "ATLAS" in args.project_name:
+              for row in worksheet.iter_rows():
+                  for cell in row:
+                      if cell.value == "500 µl":
+                          cell.value = "484"
+        if "MO" in args.project_name:
+            for row in worksheet.iter_rows():
+                for cell in row:
+                    if cell.value == "500 µl":
+                        cell.value = "488"
+                        
+        # Save finalized output file
         workbook.save(xlsx_fileName)
         print(f"Import successful!")
     except FileNotFoundError:
@@ -184,3 +209,4 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
+
