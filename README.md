@@ -16,8 +16,6 @@ or
 
     py -m pip install beautifulsoup4 openpyxl
 
-<br>
-
 ### Running the Script
 
 Navigate to the cloned repository/directory through the terminal. If you are not familiar, here is a quick [tutorial](https://www.digitalcitizen.life/command-prompt-how-use-basic-commands/).
