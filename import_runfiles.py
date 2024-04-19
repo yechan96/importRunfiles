@@ -9,7 +9,7 @@ from datetime import datetime
 import glob
 import sys
 
-def importRunfile(file_path):
+def importRunfile(file_path,vol):
     try:
         # Read the content of the file
         with open(file_path, 'r') as file:
@@ -51,6 +51,9 @@ def importRunfile(file_path):
                     if " *"  in row[0]:
                         row[0] = row[0][:-3]
                     row[5] = row[5][0] + row[5][2:]
+                    
+                    # find DNA volume position, set to int(vol) #
+                    row[10]= int(vol)
                     row[2] = int(row[2])
                     samples.append(row)
                     sample_row += 1
@@ -127,6 +130,7 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--directory", required=True, help="Directory containing run files")
     parser.add_argument("-n", "--project_name", required=True, help="project name")
     parser.add_argument("-i", "--project_ID", required=True, help="project ID")
+    parser.add_argument("-v", "--DNA_vol", required=True, help="DNA volume")
 
     args = parser.parse_args()
 
@@ -142,7 +146,7 @@ if __name__ == "__main__":
     
     # main loop for gathering runfiles and attaching to master_batch
     for run_file in run_files:
-        batchIndex, batches = importRunfile(run_file)
+        batchIndex, batches = importRunfile(run_file, args.DNA_vol) # add DNA volume arg ##
 
         for batch in batches:
             if master_batch[batchIndex] != None:
@@ -187,13 +191,8 @@ if __name__ == "__main__":
             for col in range(1, worksheet.max_column+1):
                 cell = worksheet.cell(row, col)
                 cell.alignment = Alignment(horizontal='center', vertical='center', wrapText=False)
-
-        # Replace DNA vol from 500 to post-quant/aliquot vol
-        for row in worksheet.iter_rows():
-            for cell in row:
-                if cell.value == "500 µl":
-                    cell.value = f"{args.DNA_vol}"
-                        
+               
+                    
         # Save finalized output file
         workbook.save(xlsx_fileName)
         print(f"Import successful!")
