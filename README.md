@@ -24,11 +24,11 @@ This directory should have `Extraction import template test.xlsx` and `import_ru
 
 Then you can run in the terminal
 
-    python import_runfiles.py -d /path-to-runfile-directory -n project-name -i project-id -v DNA-volume
+    python import_runfiles.py -d /runfile-directory -n project-name -i project-id -v volume
 
 or 
     
-    py import_runfiles.py -d /path-to-runfile-directory -n project-name -i project-id - v DNA-volume
+    py import_runfiles.py -d /runfile-directory -n project-name -i project-id - v volume
 
 <br>
 
