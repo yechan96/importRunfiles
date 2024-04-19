@@ -189,16 +189,10 @@ if __name__ == "__main__":
                 cell.alignment = Alignment(horizontal='center', vertical='center', wrapText=False)
 
         # Replace DNA vol from 500 to post-quant/aliquot vol
-        if "ATLAS" in args.project_name:
-              for row in worksheet.iter_rows():
-                  for cell in row:
-                      if cell.value == "500 µl":
-                          cell.value = "484"
-        if "MO" in args.project_name:
-            for row in worksheet.iter_rows():
-                for cell in row:
-                    if cell.value == "500 µl":
-                        cell.value = "488"
+        for row in worksheet.iter_rows():
+            for cell in row:
+                if cell.value == "500 µl":
+                    cell.value = f"{args.DNA_vol}"
                         
         # Save finalized output file
         workbook.save(xlsx_fileName)
